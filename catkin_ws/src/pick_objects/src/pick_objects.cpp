@@ -20,7 +20,7 @@ for(int i=0;i<2;i++)
 		  while(!ac.waitForServer(ros::Duration(5.0))){
 		    ROS_INFO("Waiting for the move_base action server to come up");
 	  	  }
-	 	  ros::Duration(3.0).sleep();
+	 	  ros::Duration(2.0).sleep();
 		}
 		else
 		{
@@ -45,12 +45,20 @@ for(int i=0;i<2;i++)
 
 	  // Wait an infinite time for the results
 	  ac.waitForResult();
-
+	if(i==0){
 	  // Check if the robot reached its goal
 	  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-	    ROS_INFO("Hooray, the base moved forward");
+	    ROS_INFO("Hooray, the base reached the pickup location");
 	  else
-	    ROS_INFO("The base failed to move forward for some reason");
+	    ROS_INFO("The base failed to reach the pickup location for some reason");
+	}
+	  else
+	{
+		if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+	    ROS_INFO("Hooray, the base reached the drop-off location");
+	  else
+	    ROS_INFO("The base failed to reach the drop-off location for some reason");
+	}
 }
   return 0;
 }

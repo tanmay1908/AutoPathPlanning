@@ -23,7 +23,7 @@ Sub_Pub(ros::NodeHandle &n)
 
 void displayMarker(double x, double y, double w)
 {
-    ROS_INFO("Trying to display Marker");
+    //ROS_INFO("Trying to display Marker");
     // Set our initial shape type to be a cube
     uint32_t shape = visualization_msgs::Marker::CUBE;
     visualization_msgs::Marker marker;
@@ -82,6 +82,7 @@ void displayMarker(double x, double y, double w)
     ros::Duration(5.0).sleep();
     ROS_INFO("Sleeping for 5 seconds");
     marker.action = visualization_msgs::Marker::DELETE;
+    marker_pub.publish(marker);
     ROS_INFO("Deleted Marker");
     count++;
     }
@@ -91,23 +92,26 @@ void displayMarker(double x, double y, double w)
 
 void manageMarker(const nav_msgs::Odometry::ConstPtr& pos)
 {
-	ROS_INFO("In callback function");
-	int x = pos->pose.pose.position.x;
-	int y = pos->pose.pose.position.y;
-	int w = pos->pose.pose.orientation.w;
-   	int tolerance = 0.2;
+	//ROS_INFO("In callback function");
+	double x = pos->pose.pose.position.x;
+	double y = pos->pose.pose.position.y;
+	double w = pos->pose.pose.orientation.w;
+   	double tolerance = 0.55;
 	if(count==0)
 	{
-		if((x<=1.0 && x>=1.0-tolerance) && (y <= 2.5 && y>=2.5-tolerance) && (w <= 1.0 && w>=1.0-tolerance))
+		//if((x<=1.0+tolerance && x>=1.0-tolerance) && (y <= 2.5+tolerance && y>=2.5-tolerance) && (w <= 1.0+tolerance && w>=1.0-tolerance))
+		if((x<=1.0+tolerance && x>=1.0-tolerance) && (y <= 2.5+tolerance && y>=2.5-tolerance))
 		{
-		displayMarker(x,y,w);
 		ROS_INFO("found a match!");
+		displayMarker(x,y,w);
+		
 		}
 	}
 
 	if(count==1)
 	{
-		if((x<=4.0 && x>=4.0-tolerance) && (y <= 1.5 && y>=1.5-tolerance) && (w <= 3.0 && w>=3.0-tolerance))
+		//if((x<=4.0+tolerance && x>=4.0-tolerance) && (y <= 1.5+tolerance && y>=1.5-tolerance) && (w <= 3.0+tolerance && w>=3.0-tolerance))
+		  if((x<=4.0+tolerance && x>=4.0-tolerance) && (y <= 1.5+tolerance && y>=1.5-tolerance))
 		displayMarker(x,y,w);
 		
 	}
