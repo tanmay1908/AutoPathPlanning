@@ -20,6 +20,7 @@ for(int i=0;i<2;i++)
 		  while(!ac.waitForServer(ros::Duration(5.0))){
 		    ROS_INFO("Waiting for the move_base action server to come up");
 	  	  }
+	 	  ros::Duration(3.0).sleep();
 		}
 		else
 		{
@@ -35,6 +36,7 @@ for(int i=0;i<2;i++)
 	  
 	// Define a position and orientation for the robot to reach
 	  goal.target_pose.pose.position.x = i*3.0+1.0;
+	  goal.target_pose.pose.position.y = 2.5-i*1.0;
 	  goal.target_pose.pose.orientation.w = i*2.0+1.0;
 
 	   // Send the goal position and orientation for the robot to reach

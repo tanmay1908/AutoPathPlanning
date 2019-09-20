@@ -1,31 +1,18 @@
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
-#include <nav_msgs/Odometry.h>
 
-
-class Sub_Pub
+int main( int argc, char** argv )
 {
-private:
-ros::Publisher marker_pub;
-ros::Subscriber sub;
-int count;
+  ros::init(argc, argv, "add_markers");
+  ros::NodeHandle n;
+  ros::Rate r(1);
+  ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
-public:
-
-Sub_Pub(ros::NodeHandle &n)
-{
-        marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-        sub = n.subscribe("/odom", 2, &Sub_Pub::manageMarker,this);
-        count=0;
-	ROS_INFO("Initialized Sub_Pub instance");
-}
-
-
-void displayMarker(double x, double y, double w)
-{
-    ROS_INFO("Trying to display Marker");
-    // Set our initial shape type to be a cube
-    uint32_t shape = visualization_msgs::Marker::CUBE;
+  // Set our initial shape type to be a cube
+  uint32_t shape = visualization_msgs::Marker::CUBE;
+  
+  while (ros::ok())
+  {
     visualization_msgs::Marker marker;
     // Set the frame ID and timestamp.  See the TF tutorials for information on these.
     marker.header.frame_id = "map";
@@ -43,18 +30,18 @@ void displayMarker(double x, double y, double w)
     marker.action = visualization_msgs::Marker::ADD;
 
     // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
-    marker.pose.position.x = x;
-    marker.pose.position.y = y;
+    marker.pose.position.x = -2.583;
+    marker.pose.position.y = 1.267;
     marker.pose.position.z = 0;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
     marker.pose.orientation.z = 0.0;
-    marker.pose.orientation.w = w;
+    marker.pose.orientation.w = 1.0;
 
     // Set the scale of the marker -- 1x1x1 here means 1m on a side
-    marker.scale.x = 0.5;
-    marker.scale.y = 0.5;
-    marker.scale.z = 0.5;
+    marker.scale.x = 1.0;
+    marker.scale.y = 1.0;
+    marker.scale.z = 1.0;
 
     // Set the color -- be sure to set alpha to something non-zero!
     marker.color.r = 1.0f;
@@ -69,59 +56,34 @@ void displayMarker(double x, double y, double w)
     {
       if (!ros::ok())
       {
-       // return 0;
+        return 0;
       }
       ROS_WARN_ONCE("Please create a subscriber to the marker");
       sleep(1);
     }
     marker_pub.publish(marker);
-
-    
-    if(count==0)
-    {
     ros::Duration(5.0).sleep();
     ROS_INFO("Sleeping for 5 seconds");
     marker.action = visualization_msgs::Marker::DELETE;
-    ROS_INFO("Deleted Marker");
-    count++;
-    }
-
-}
-
-
-void manageMarker(const nav_msgs::Odometry::ConstPtr& pos)
-{
-	ROS_INFO("In callback function");
-	int x = pos->pose.pose.position.x;
-	int y = pos->pose.pose.position.y;
-	int w = pos->pose.pose.orientation.w;
-   	int tolerance = 0.2;
-	if(count==0)
-	{
-		if((x<=1.0 && x>=1.0-tolerance) && (y <= 2.5 && y>=2.5-tolerance) && (w <= 1.0 && w>=1.0-tolerance))
-		{
-		displayMarker(x,y,w);
-		ROS_INFO("found a match!");
-		}
-	}
-
-	if(count==1)
-	{
-		if((x<=4.0 && x>=4.0-tolerance) && (y <= 1.5 && y>=1.5-tolerance) && (w <= 3.0 && w>=3.0-tolerance))
-		displayMarker(x,y,w);
-		
-	}
-}
-
-};
-
-
-int main( int argc, char** argv )
-{
-  ros::init(argc, argv, "add_markers");
-  ros::NodeHandle n;
-  Sub_Pub inst(n);
-  //ros::Rate r(1);
-  //r.sleep();
-  ros::spin();
+    ROS_INFO("Deleted Marker. Sleeping for 5 seconds");
+    //marker_pub.publish(marker);
+    ROS_INFO("A");
+    ros::Duration(5.0).sleep();
+    ROS_INFO("B");
+    // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
+    marker.pose.position.x = 3.346;
+    marker.pose.position.y = -1.818;
+    marker.pose.position.z = 0;
+    marker.pose.orientation.x = 1.0;
+    marker.pose.orientation.y = 0.0;
+    marker.pose.orientation.z = 0.0;
+    marker.pose.orientation.w = 1.0;
+    ROS_INFO("C");
+    marker.action = visualization_msgs::Marker::ADD;
+    ROS_INFO("D");
+    marker_pub.publish(marker);
+    ROS_INFO("New marker published");
+    ros::Duration(5.0).sleep();
+    r.sleep();
+  }
 }
