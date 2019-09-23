@@ -7,4 +7,4 @@ The square disappears once the robot reaches the pickup position and then moves 
 A SLAM algorithm was also implemented for the robot using the gmapping ROS package 
 The generated map can be found in the src/maps directory, also seen below:
 
-![generated map](catkin_ws/src/maps/map1.pgm)
+![generated map](map1.pgm)
